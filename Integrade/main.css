@@ -1,0 +1,137 @@
+:root {
+  --primary: #04010c;
+  --cream: #fefaeb;
+  --accent: #00d0a9;
+  --secondary: #8604e7;
+  --light_gray: #373737;
+  --font: 'League Spartan', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font);
+  background-color: var(--primary);
+  color: var(--accent);
+  padding: 2rem;
+  line-height: 1.5;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.logo {
+  max-width: 300px;
+  margin-bottom: 0rem;
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+.tagline {
+  font-size: 3rem;
+  color: var(--accent);
+  font-weight: 600
+  
+;
+}
+
+.launch-panel {
+  max-width: 500px;
+  color: #ffffff;
+  margin: 0 auto;
+  background: var(--light_gray);
+  border: 2px solid var(--primary);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+form label {
+  display: block;
+  margin: 1rem 0 0.3rem;
+  font-weight: 600;
+}
+
+form input,
+form select {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 6px;
+  border: 1px solid var(--primary);
+  font-family: var(--font);
+  margin-bottom: 1rem;
+}
+
+button {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: var(--primary);
+  color: white;
+  font-size: 1rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: var(--accent);
+}
+
+footer {
+  margin-top: 3rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #ffffff;
+}
+.section-title {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  margin-top: 2rem;
+  text-align: center;
+}
+.form-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin: 0 auto;
+  max-width: 1100px;
+}
+
+.launch-panel {
+  flex: 1 1 300px;
+}
+.form-header {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-align: center;
+  padding: 0.75rem 1rem;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  margin: -2rem -2rem 1.5rem -2rem; /* Pull outside form padding */
+}
+
+.accent-bg {
+  background-color: var(--accent);
+      box-shadow: 0 0 12px var(--accent);
+
+
+}
+
+.secondary-bg {
+  background-color: var(--secondary);
+      box-shadow: 0 0 12px var(--secondary);
+
+}

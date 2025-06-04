@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Widgets | Integrade</title>
+  <link rel="stylesheet" href="widgets.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <header>
+    <div class="header-top-row">
+      <button id="back-button">&larr; Back</button>
+      <img src="../images/integrade.png" alt="Integrade Logo" class="header-logo" />
+      <p id="room-label"></p>
+    </div>
+  </header>
+
+  <main class="widgets-columns">
+
+    <!-- Left Column (Steps 1 & 2) -->
+    <div class="column-left">
+
+      <!-- Step 1: User Info -->
+      <section class="widget-box">
+        <div class="form-header accent-glow">Step 1: Submit Your Info</div>
+        <div class="user-info">
+          <label for="displayName">Your Name:</label>
+          <input type="text" id="displayName" placeholder="Enter your name" />
+
+          <label for="userPhoto">Your Photo:</label>
+          <input type="file" id="userPhoto" accept="image/png, image/jpeg" />
+
+          <button id="submitUserInfo">Submit Info</button>
+
+          <div id="userPreview" class="user-preview hidden">
+            <img id="previewPhoto" alt="Preview Photo" />
+            <p id="previewName"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Step 2: Select Widget -->
+      <section class="widget-box">
+        <div class="form-header accent-glow">Step 2: Select a Widget</div>
+        <div class="widget-gallery">
+
+          <div class="widget-card" data-template="jamboard">
+            <div class="card-image jamboard-bg"></div>
+            <div class="card-text">
+              <h3>Jamboard</h3>
+              <p>Collaborative sticky notes</p>
+            </div>
+          </div>
+
+          <div class="widget-card" data-template="poll">
+            <div class="card-image poll-bg"></div>
+            <div class="card-text">
+              <h3>Poll</h3>
+              <p>Vote on a question</p>
+            </div>
+          </div>
+
+          <div class="widget-card" data-template="survey">
+            <div class="card-image survey-bg"></div>
+            <div class="card-text">
+              <h3>Survey</h3>
+              <p>Collect responses</p>
+            </div>
+          </div>
+
+          <div class="widget-card" data-template="review">
+            <div class="card-image review-bg"></div>
+            <div class="card-text">
+              <h3>Review Game</h3>
+              <p>Quiz-style flash review</p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Right Column (Steps 3 & 4) -->
+    <div class="column-right">
+
+      <!-- Step 3: Set Up Widget -->
+      <section class="widget-box">
+        <div class="form-header accent-glow">Step 3: Set Up</div>
+        <div id="setupContent" class="setup-content">
+          <p>Select a widget to begin setup.</p>
+        </div>
+      </section>
+
+      <!-- Step 4: Preview and Launch -->
+      <section class="widget-box">
+        <div class="form-header accent-glow">Step 4: Preview and Launch</div>
+        <div class="setup-content" id="previewArea">
+          <p>No setup data yet.</p>
+        </div>
+        <button class="launch-button" id="launchJamboard">Launch Activity</button>
+      </section>
+
+    </div>
+
+  </main>
+
+  <script src="widgets.js"></script>
+</body>
+</html>

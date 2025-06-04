@@ -1,0 +1,464 @@
+/* Root variables from widgets.css, plus some Jamboard specific adaptations */
+:root {
+    /* Core Brand Palette from widgets.css */
+    --primary: #04010c;         /* Very dark, almost black */
+    --cream: #fefaeb;           /* Very light, off-white - used for text for better contrast than pure white on dark */
+    --accent: #00d0a9;          /* Teal/Turquoise */
+    --secondary: #8604e7;        /* Purple */
+    --light_gray: #373737;      /* Dark gray */
+    --input-bg: #111;           /* From widgets.css for inputs */
+    --font: 'League Spartan', sans-serif;
+
+    /* Jamboard specific semantic variable names using the brand palette */
+    --page-bg: var(--primary);
+    --page-text-color: #ffffff; /* As per widgets.css body */
+    --card-bg: var(--light_gray);
+    --card-text-color: #ccc; /* Consistent with .card-text p in widgets.css */
+    --card-title-color: var(--accent); /* For post titles, consistent with .card-text h3 */
+    --card-border-color: #222; /* From widget-card border */
+    --interactive-accent-color: var(--accent);
+    --interactive-secondary-color: var(--secondary);
+    --button-text-color: white; /* Standard button text color from widgets.css */
+    --avatar-border-color: var(--accent);
+
+    --modal-bg: var(--light_gray);
+    --modal-header-bg: var(--primary); /* Darker header for modal */
+    --modal-content-area-bg: #2a2a2a; /* Slightly lighter than light_gray for modal body */
+    --modal-text-color: var(--page-text-color);
+    --modal-input-border-color: var(--primary); /* Consistent with widgets.css inputs */
+    --modal-placeholder-color: #888;
+}
+
+/* Basic Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font);
+    background-color: var(--page-bg);
+    color: var(--page-text-color);
+    line-height: 1.6;
+    overflow-x: hidden;
+    padding: 2rem; /* Added padding like widgets.css */
+}
+
+.app-container {
+    padding: 0; /* Removed default app-container padding since body has it */
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Header Styling Adapted to Brand */
+.app-header {
+    margin-bottom: 2rem; /* Consistent with widgets.css header */
+    text-align: center;  /* Consistent with widgets.css header */
+}
+.header-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  margin-bottom: 1rem;
+  /* padding: 0 10px; No specific padding, rely on body/app-container */
+}
+
+.header-logo {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 80px; /* Consistent with widgets.css */
+  object-fit: contain;
+  pointer-events: none;
+}
+
+#room-label-display { /* Renamed from #room-label in widgets.css */
+  font-size: 1rem;
+  color: var(--page-text-color);
+  margin: 0;
+}
+
+/* Prompt Display Area - Branded */
+#prompt-display-area {
+    background-color: var(--light_gray); /* More distinct than semi-transparent */
+    border: 1px solid var(--card-border-color);
+    border-radius: 8px;
+    padding: 1rem; /* Consistent padding */
+    margin: 0 auto 2rem auto; /* Centered and margin like widgets */
+    max-width: 600px; /* Consistent with other central elements */
+    text-align: center;
+    color: var(--card-text-color);
+}
+#prompt-display-area p {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    color: var(--page-text-color); /* Main text color for prompt text itself */
+}
+#prompt-display-area .attachment {
+    margin-top: 10px;
+}
+#prompt-display-area .attachment img,
+#prompt-display-area .attachment embed {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 6px; /* Consistent radius */
+    border: 1px solid var(--interactive-accent-color); /* Use accent for prompt attachment border */
+}
+.prompt-attachment img {
+  max-width: 300px;
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 1rem auto;
+  border-radius: 6px;
+  border: 1px solid var(--interactive-accent-color, #888);
+}
+
+/* Jamboard Posts Area */
+.jamboard-posts-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Keep gap for card spacing */
+    justify-content: center; /* Center cards if space allows */
+}
+
+.post-card {
+    background-color: var(--card-bg);
+    color: var(--card-text-color);
+    border-radius: 8px; /* Consistent with widget-card */
+    border: 1px solid var(--card-border-color); /* Consistent with widget-card */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    width: 320px;
+    padding: 1rem; /* Consistent padding */
+    display: flex;
+    flex-direction: column;
+}
+
+.post-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+    object-fit: cover;
+    border: 2px solid var(--avatar-border-color);
+}
+
+.user-info .username { /* Class from hybrid_script.js */
+    font-weight: bold;
+    display: block;
+    font-size: 0.95rem; /* Slightly larger for readability */
+    color: var(--page-text-color);
+}
+
+.user-info .timestamp {
+    font-size: 0.8rem;
+    color: #aaa; /* Lighter gray for timestamp */
+}
+
+.options-btn {
+    margin-left: auto;
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #aaa;
+}
+.options-btn:hover {
+    color: var(--interactive-accent-color);
+}
+
+.post-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 0.75rem;
+    color: var(--card-title-color);
+}
+
+.post-attachment-display img,
+.post-attachment-display embed {
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-bottom: 0.75rem;
+    background-color: var(--primary); /* Dark bg for image placeholder region */
+}
+
+.post-content-text {
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+    color: var(--card-text-color);
+    flex-grow: 1;
+    white-space: pre-wrap;
+}
+
+.post-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.1); /* Light separator from widget-card */
+    padding-top: 0.75rem;
+    margin-top: auto;
+}
+
+.reactions button, .reactions span {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #aaa;
+    font-size: 0.9rem;
+    margin-right: 15px;
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--font);
+}
+.reactions button:hover {
+    color: var(--interactive-accent-color);
+}
+.reactions .icon {
+    margin-right: 5px;
+}
+
+/* Comment Section Styling - Branded */
+.comments-section {
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+.toggle-comment-button {
+  background-color: transparent;
+  color: var(--interactive-accent-color);
+  border: 1px solid var(--interactive-accent-color);
+  padding: 0.4rem 0.8rem; /* Consistent with #back-button */
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  font-family: var(--font);
+  font-weight: bold;
+  transition: background-color 0.2s, color 0.2s;
+}
+.toggle-comment-button:hover {
+  background-color: var(--interactive-accent-color);
+  color: var(--button-text-color); /* Or var(--primary) if accent is light */
+}
+.comment-box {
+  margin-top: 0.75rem;
+}
+.comment-box textarea {
+  width: 100%;
+  padding: 0.6rem; /* Consistent with user-info input */
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  background-color: var(--input-bg);
+  border: 1px solid var(--modal-input-border-color);
+  color: var(--page-text-color);
+  border-radius: 6px;
+  font-family: var(--font);
+  resize: vertical;
+  min-height: 40px;
+}
+.comment-box textarea::placeholder {
+    color: var(--modal-placeholder-color);
+}
+.comment-box button {
+  padding: 0.6rem 1rem; /* Consistent button padding */
+  font-size: 0.9rem;
+  background: var(--interactive-accent-color);
+  color: var(--button-text-color);
+  border: none;
+  border-radius: 6px;
+  font-family: var(--font);
+  font-weight: bold;
+  cursor: pointer;
+}
+.comment-box button:hover {
+  background-color: var(--interactive-secondary-color);
+}
+.comment-list {
+  margin-top: 0.75rem;
+}
+.comment {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+  color: var(--card-text-color);
+}
+.comment .avatar {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  border: 1px solid var(--avatar-border-color);
+}
+.comment .comment-content strong {
+    font-weight: 600;
+    color: var(--page-text-color); /* Stronger color for commenter name */
+}
+.hidden {
+  display: none !important;
+}
+
+
+/* Floating Action Button (FAB) - Branded */
+.fab {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    background-color: var(--interactive-accent-color);
+    color: var(--button-text-color);
+    border: none;
+    border-radius: 50%; /* Keep FAB circular */
+    font-size: 2rem;
+    text-align: center;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    font-family: var(--font); /* Ensure font */
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    z-index: 900;
+}
+.fab:hover {
+    background-color: var(--interactive-secondary-color);
+    transform: scale(1.05);
+}
+
+/* Modal - Branded */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Darker overlay */
+    display: flex;
+    align-items: center; /* Center modal vertically */
+    justify-content: center; /* Center modal horizontally */
+    padding: 20px;
+    z-index: 1000;
+}
+.modal-content {
+    background-color: var(--modal-bg);
+    color: var(--modal-text-color);
+    border-radius: 12px; /* Consistent with widget-box */
+    border: 1px solid var(--card-border-color);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    width: 450px;
+    max-height: 90vh; /* Allow more height */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.modal-window-controls { /* Keep this distinct or remove if not essential to brand */
+    display: flex;
+    padding: 8px 12px;
+    background-color: var(--modal-header-bg);
+    border-bottom: 1px solid var(--card-border-color);
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+.modal-window-btn {
+    background: #555; color: #ccc; border: none; border-radius: 50%;
+    width: 18px; height: 18px; font-size: 10px; line-height: 18px;
+    text-align: center; cursor: pointer; margin-right: 8px;
+}
+.modal-window-btn.close-btn { background: #ff5f57; }
+.modal-window-btn:nth-child(2) { background: #febb2e; }
+.modal-window-btn:nth-child(3) { background: #28c840; }
+
+.modal-content input[type="text"]#post-subject-input { /* More specific selector */
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid var(--interactive-accent-color); /* Accent underline for subject */
+    color: var(--modal-text-color);
+    font-size: 1.5rem;
+    padding: 15px 20px;
+    margin: 10px 20px;
+    outline: none;
+    font-family: var(--font);
+}
+.modal-content input[type="text"]#post-subject-input::placeholder {
+    color: var(--modal-placeholder-color);
+}
+
+.modal-body {
+    padding: 1rem 20px; /* Consistent padding */
+    flex-grow: 1; display: flex; flex-direction: column;
+    background-color: var(--modal-content-area-bg);
+    margin: 0 20px;
+    border-radius: 6px;
+}
+.toolbar-icons {
+    padding: 10px 0; display: flex; gap: 15px; align-items: center;
+    border-bottom: 1px solid var(--light_gray); /* Subtler border */
+    margin-bottom: 10px;
+}
+.toolbar-icon {
+    background: none; border: none; color: #ccc; font-size: 1.2rem; cursor: pointer;
+}
+.toolbar-icon:hover { color: var(--interactive-accent-color); }
+
+.modal-file-name-display {
+    font-size: 0.8rem;
+    color: #aaa;
+    margin-left: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 150px;
+}
+
+.modal-content textarea#post-text-input { /* More specific selector */
+    flex-grow: 1;
+    background-color: var(--input-bg);
+    border: 1px solid var(--modal-input-border-color);
+    color: var(--modal-text-color);
+    font-size: 1rem;
+    padding: 0.6rem; /* Consistent input padding */
+    border-radius: 6px; /* Consistent radius */
+    resize: vertical;
+    outline: none;
+    min-height: 100px;
+    font-family: var(--font);
+}
+.modal-content textarea#post-text-input::placeholder {
+    color: var(--modal-placeholder-color);
+}
+
+.modal-actions {
+    padding: 1rem 20px; /* Consistent padding */
+    display: flex;
+    justify-content: flex-end;
+    border-top: 1px solid var(--light_gray);
+    background-color: var(--modal-header-bg); /* Consistent with header region */
+}
+.publish-btn {
+    background-color: var(--interactive-accent-color);
+    color: var(--button-text-color);
+    border: none;
+    padding: 0.6rem 1.2rem; /* Consistent with launch-button */
+    border-radius: 6px; /* Consistent radius */
+    font-size: 1rem; /* Consistent font size */
+    font-weight: bold;
+    font-family: var(--font);
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.publish-btn:hover:not(:disabled) {
+    background-color: var(--interactive-secondary-color);
+}
+.publish-btn:disabled {
+    background-color: #555; /* Standard disabled style */
+    color: #999;
+    cursor: not-allowed;
+}
