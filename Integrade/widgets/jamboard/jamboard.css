@@ -374,8 +374,6 @@ body {
     text-align: center; cursor: pointer; margin-right: 8px;
 }
 .modal-window-btn.close-btn { background: #ff5f57; }
-.modal-window-btn:nth-child(2) { background: #febb2e; }
-.modal-window-btn:nth-child(3) { background: #28c840; }
 
 .modal-content input[type="text"]#post-subject-input { /* More specific selector */
     background-color: transparent;
