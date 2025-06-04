@@ -1,6 +1,6 @@
 # Integrade
 
-This project embeds interactive widgets in a Learning Management System. The new `login.html` page allows users to sign in before accessing their activities.
+This project embeds interactive widgets in a Learning Management System. The `login.html` page allows returning users to sign in while `signup.html` lets new users create an account.
 
 ## Setup
 
@@ -10,4 +10,4 @@ This project embeds interactive widgets in a Learning Management System. The new
 
 ## Usage
 
-Visit `login.html` to sign in. After successful login you will be redirected to `index.html` where activities can be launched.
+First visit `signup.html` to create an account. Once registered you can sign in via `login.html`. After successful login you will be redirected to `index.html` where activities can be launched.
