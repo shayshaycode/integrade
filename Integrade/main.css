@@ -94,6 +94,10 @@ footer {
   font-size: 0.9rem;
   color: #ffffff;
 }
+
+.center-text {
+  text-align: center;
+}
 .section-title {
   font-size: 1.3rem;
   margin-bottom: 1rem;
