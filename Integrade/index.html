@@ -28,10 +28,14 @@
 
     <form id="return-form" class="launch-panel">
         <div class="form-header secondary-bg">Access a Saved Activity</div>
-      <label for="returnRoomName">Activity Name:</label>
-      <input type="text" id="returnRoomName" name="returnRoomName" required />
-      <button type="submit">Access Activity</button>
-    </form>
+        <div id="activities-loading">Loading...</div>
+        <div id="activity-select-container" style="display:none;">
+          <label for="activitySelect">Your Activities:</label>
+          <select id="activitySelect" name="activitySelect"></select>
+        </div>
+        <p id="noActivitiesMessage" class="center-text" style="display:none;">No saved activities yet</p>
+        <button type="submit">Access Activity</button>
+      </form>
   </div>
 </main>
 

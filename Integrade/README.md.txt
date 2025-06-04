@@ -6,7 +6,8 @@ This project embeds interactive widgets in a Learning Management System. The `lo
 
 1. Configure database credentials in `includes/config.php`.
 2. Create a `users` table with columns `id`, `username`, and `password_hash`.
-3. Serve the project using a PHP-capable web server.
+3. Create an `activities` table with columns `id`, `user_id`, `name`, and `created_at`.
+4. Serve the project using a PHP-capable web server.
 
 ## Usage
 
