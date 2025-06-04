@@ -39,13 +39,54 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Placeholder Images & Data ---
     const defaultAvatar = 'https://via.placeholder.com/40/7E57C2/FFFFFF?Text=U'; // A default avatar
     const placeholderPostImage1 = 'https://via.placeholder.com/300x200/e0e0e0/757575?Text=Default+Image';
-    
+
     // Attempt to use the uploaded image for the first default post.
     // Replace 'user_post_image.png' with the actual name of the image if it's specific.
-    let initialPostImage = 'user_post_image.png'; 
+    let initialPostImage = 'user_post_image.png';
     const imgTest = new Image();
     imgTest.src = initialPostImage;
     imgTest.onerror = () => { initialPostImage = placeholderPostImage1; renderPosts(); };
+
+    let posts = [];
+
+    async function loadPosts() {
+        try {
+            const response = await fetch(`../../includes/jamboard_posts.php?room=${encodeURIComponent(sessionRoom)}`);
+            const data = await response.json();
+            if (data.success) {
+                posts = data.posts.map(p => ({
+                    id: parseInt(p.id),
+                    username: p.username,
+                    avatar: p.avatar,
+                    timestamp: new Date(p.created_at).toLocaleString(),
+                    title: p.title,
+                    content: p.content,
+                    attachment: p.attachment,
+                    filename: p.filename,
+                    likes: 0,
+                    comments: []
+                }));
+            }
+        } catch (e) {
+            console.error('Failed to load posts', e);
+        }
+    }
+
+    async function savePost(post) {
+        try {
+            const response = await fetch('../../includes/jamboard_posts.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(post)
+            });
+            const data = await response.json();
+            if (data.success && data.id) {
+                post.id = data.id;
+            }
+        } catch (e) {
+            console.error('Failed to save post', e);
+        }
+    }
 
 
 
@@ -117,7 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <button class="options-btn" aria-label="Post options">⋮</button>
             </div>
             <h2 class="post-title">${post.title}</h2>
-            ${renderAttachment(post.attachment, post.attachmentFilename)}
+            ${renderAttachment(post.attachment, post.filename)}
             <p class="post-content-text">${post.content}</p>
             <div class="post-footer">
                 <div class="reactions">
@@ -241,43 +282,37 @@ document.addEventListener('DOMContentLoaded', () => {
         const file = modalFileUploadInput.files[0];
 
         const newPost = {
-            id: Date.now(),
+            room: sessionRoom,
             username: sessionDisplayName,
-            avatar: sessionUserPhoto, // Store raw session photo
-            timestamp: 'just now',
+            avatar: sessionUserPhoto,
             title: subject,
             content: text,
             attachment: null,
-            attachmentFilename: null,
-            attachmentType: null,
-            likes: 0,
-            comments: []
+            filename: null
+        };
+
+        const finalize = async () => {
+            await savePost(newPost);
+            newPost.timestamp = 'just now';
+            posts.unshift(newPost);
+            renderPosts();
+            toggleModal(false);
         };
 
         if (file) {
             const reader = new FileReader();
             reader.onload = function (e) {
-                newPost.attachment = e.target.result; // base64 string
-                newPost.attachmentFilename = file.name;
-                const ext = file.name.split('.').pop().toLowerCase();
-                if (["png", "jpg", "jpeg", "gif"].includes(ext)) {
-                    newPost.attachmentType = 'image';
-                } else {
-                    newPost.attachmentType = 'file';
-                }
-                posts.unshift(newPost);
-                renderPosts();
-                toggleModal(false);
+                newPost.attachment = e.target.result;
+                newPost.filename = file.name;
+                finalize();
             };
             reader.readAsDataURL(file);
         } else {
-            posts.unshift(newPost);
-            renderPosts();
-            toggleModal(false);
+            finalize();
         }
     });
 
     // --- Initializations ---
     displayPrompt();
-    renderPosts();
+    loadPosts().then(renderPosts);
 });

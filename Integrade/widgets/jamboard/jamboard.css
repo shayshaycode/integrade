@@ -62,6 +62,7 @@ body {
   align-items: center;
   position: relative;
   margin-bottom: 1rem;
+  height: 80px; /* keep space for logo */
   /* padding: 0 10px; No specific padding, rely on body/app-container */
 }
 
@@ -86,7 +87,7 @@ body {
     border: 1px solid var(--card-border-color);
     border-radius: 8px;
     padding: 1rem; /* Consistent padding */
-    margin: 0 auto 2rem auto; /* Centered and margin like widgets */
+    margin: 1rem auto 2rem auto; /* Centered and margin like widgets */
     max-width: 600px; /* Consistent with other central elements */
     text-align: center;
     color: var(--card-text-color);
