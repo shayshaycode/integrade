@@ -120,72 +120,82 @@ widgetCards.forEach(card => {
     else if (selectedTemplate === "poll") {
       setupContent.innerHTML = `
         <div class="poll-setup">
-          <p><strong>Poll Setup:</strong> Enter a question and up to five options for participants to choose from.</p>
-
-          <div class="form-row">
-            <label for="pollQuestion">Question:</label>
-            <input type="text" id="pollQuestion" placeholder="e.g. What's your favourite color?" />
-          </div>
-
-          <div id="pollOptions">
-            <div class="form-row">
-              <label>Option 1:</label>
-              <input type="text" class="poll-option" placeholder="First option" />
-            </div>
-            <div class="form-row">
-              <label>Option 2:</label>
-              <input type="text" class="poll-option" placeholder="Second option" />
-            </div>
-            <div id="extraOptions"></div>
-          </div>
-          <button id="addOptionButton" type="button">Add Option</button>
-
-          <div class="form-row">
-            <label for="pollFollowup">Additional Prompt (optional):</label>
-            <input type="text" id="pollFollowup" placeholder="Any additional instructions..." />
-          </div>
+          <p><strong>Poll Setup:</strong> Write each prompt with 2-5 options. Use the + button to add more questions.</p>
+          <div id="pollQuestions"></div>
+          <button id="addQuestionButton" type="button" class="add-question-btn">+ Add Question</button>
         </div>
       `;
 
-      const questionInput = document.getElementById("pollQuestion");
-      const followupInput = document.getElementById("pollFollowup");
-      const addOptionBtn = document.getElementById("addOptionButton");
-      const extraOptions = document.getElementById("extraOptions");
-      let optionCount = 2;
+      const pollQuestions = document.getElementById("pollQuestions");
+      const addQuestionButton = document.getElementById("addQuestionButton");
 
-      function updatePreview() {
-        const question = questionInput.value.trim();
-        const options = Array.from(document.querySelectorAll(".poll-option"))
-          .map(opt => opt.value.trim())
-          .filter(Boolean);
-        const follow = followupInput.value.trim();
-        let html = "";
-        if (question) {
-          html += `<p><strong>${question}</strong></p>`;
-        }
-        if (options.length) {
-          html += '<ul>' + options.map(o => `<li>${o}</li>`).join('') + '</ul>';
-        }
-        if (follow) {
-          html += `<p>${follow}</p>`;
-        }
-        previewArea.innerHTML = html || '<p>No setup data yet.</p>';
+      function addQuestion() {
+        const index = pollQuestions.children.length + 1;
+        const wrapper = document.createElement("div");
+        wrapper.className = "poll-question-form";
+        wrapper.innerHTML = `
+          <div class="form-row">
+            <label>Prompt ${index}:</label>
+            <input type="text" class="poll-question-input" placeholder="Enter question ${index}" />
+          </div>
+          <div class="poll-option-wrapper">
+            <div class="form-row">
+              <label>Option 1:</label>
+              <input type="text" class="poll-option" placeholder="Option 1" />
+            </div>
+            <div class="form-row">
+              <label>Option 2:</label>
+              <input type="text" class="poll-option" placeholder="Option 2" />
+            </div>
+            <div class="extra-options"></div>
+            <button type="button" class="add-option-btn">Add Option</button>
+          </div>
+        `;
+        pollQuestions.appendChild(wrapper);
+
+        const addOptBtn = wrapper.querySelector(".add-option-btn");
+        const extraOpt = wrapper.querySelector(".extra-options");
+        let optCount = 2;
+
+        addOptBtn.addEventListener("click", () => {
+          if (optCount >= 5) return;
+          optCount++;
+          const row = document.createElement("div");
+          row.className = "form-row";
+          row.innerHTML = `<label>Option ${optCount}:</label><input type="text" class="poll-option" placeholder="Option ${optCount}" />`;
+          extraOpt.appendChild(row);
+          row.querySelector(".poll-option").addEventListener("input", updatePreview);
+        });
+
+        wrapper.querySelectorAll("input").forEach(i => i.addEventListener("input", updatePreview));
+        updatePreview();
       }
 
-      addOptionBtn.addEventListener("click", () => {
-        if (optionCount >= 5) return;
-        optionCount++;
-        const wrapper = document.createElement("div");
-        wrapper.className = "form-row";
-        wrapper.innerHTML = `<label>Option ${optionCount}:</label><input type="text" class="poll-option" placeholder="Option ${optionCount}" />`;
-        extraOptions.appendChild(wrapper);
-        wrapper.querySelector(".poll-option").addEventListener("input", updatePreview);
+      function updatePreview() {
+        const questions = Array.from(document.querySelectorAll('.poll-question-form')).map((q, idx) => {
+          const prompt = q.querySelector('.poll-question-input').value.trim();
+          const opts = Array.from(q.querySelectorAll('.poll-option')).map(o => o.value.trim()).filter(Boolean);
+          return { prompt, opts };
+        }).filter(q => q.prompt && q.opts.length >= 2);
+
+        if (!questions.length) {
+          previewArea.innerHTML = '<p>No setup data yet.</p>';
+          return;
+        }
+
+        let html = '';
+        questions.forEach((q, i) => {
+          html += `<p><strong>${i + 1}. ${q.prompt}</strong></p>`;
+          html += '<ul>' + q.opts.map(o => `<li>${o}</li>`).join('') + '</ul>';
+        });
+        previewArea.innerHTML = html;
+      }
+
+      addQuestionButton.addEventListener('click', () => {
+        addQuestion();
       });
 
-      questionInput.addEventListener("input", updatePreview);
-      followupInput.addEventListener("input", updatePreview);
-      document.querySelectorAll(".poll-option").forEach(opt => opt.addEventListener("input", updatePreview));
-      updatePreview();
+      addQuestion();
     }
   });
 });
@@ -197,8 +207,7 @@ launchBtn.addEventListener("click", async () => {
     const photo = photoInput.files[0];
     const promptInput = document.getElementById("jamboardPrompt");
     const fileInput = document.getElementById("jamboardFile");
-    const pollQuestion = document.getElementById("pollQuestion");
-    const pollFollowup = document.getElementById("pollFollowup");
+    const pollForms = document.querySelectorAll('.poll-question-form');
 
     if (!selectedTemplate) {
       alert("Please select a widget.");
@@ -231,19 +240,20 @@ launchBtn.addEventListener("click", async () => {
         promptFile: promptFileData,
       };
     } else if (selectedTemplate === "poll") {
-      const options = Array.from(document.querySelectorAll(".poll-option"))
-        .map(o => o.value.trim())
-        .filter(Boolean);
-      sessionData = {
-        ...sessionData,
-        question: pollQuestion?.value.trim() || "",
-        options,
-        followup: pollFollowup?.value.trim() || "",
-      };
-      if (!sessionData.question || options.length < 2) {
-        alert("Please provide a question and at least two options.");
+      const questions = Array.from(pollForms).map(form => {
+        const promptTxt = form.querySelector('.poll-question-input').value.trim();
+        const opts = Array.from(form.querySelectorAll('.poll-option'))
+          .map(o => o.value.trim())
+          .filter(Boolean);
+        return { prompt: promptTxt, options: opts };
+      }).filter(q => q.prompt && q.options.length >= 2);
+
+      if (!questions.length) {
+        alert("Please provide at least one prompt with two options.");
         return;
       }
+
+      sessionData = { ...sessionData, questions };
     }
 
     sessionStorage.setItem(sessionId, JSON.stringify(sessionData));
