@@ -117,6 +117,86 @@ widgetCards.forEach(card => {
         }
       }
     }
+    else if (selectedTemplate === "poll") {
+      setupContent.innerHTML = `
+        <div class="poll-setup">
+          <p><strong>Poll Setup:</strong> Write each prompt with 2-5 options. Use the + button to add more questions.</p>
+          <div id="pollQuestions"></div>
+          <button id="addQuestionButton" type="button" class="add-question-btn">+ Add Question</button>
+        </div>
+      `;
+
+      const pollQuestions = document.getElementById("pollQuestions");
+      const addQuestionButton = document.getElementById("addQuestionButton");
+
+      function addQuestion() {
+        const index = pollQuestions.children.length + 1;
+        const wrapper = document.createElement("div");
+        wrapper.className = "poll-question-form";
+        wrapper.innerHTML = `
+          <div class="form-row">
+            <label>Prompt ${index}:</label>
+            <input type="text" class="poll-question-input" placeholder="Enter question ${index}" />
+          </div>
+          <div class="poll-option-wrapper">
+            <div class="form-row">
+              <label>Option 1:</label>
+              <input type="text" class="poll-option" placeholder="Option 1" />
+            </div>
+            <div class="form-row">
+              <label>Option 2:</label>
+              <input type="text" class="poll-option" placeholder="Option 2" />
+            </div>
+            <div class="extra-options"></div>
+            <button type="button" class="add-option-btn">Add Option</button>
+          </div>
+        `;
+        pollQuestions.appendChild(wrapper);
+
+        const addOptBtn = wrapper.querySelector(".add-option-btn");
+        const extraOpt = wrapper.querySelector(".extra-options");
+        let optCount = 2;
+
+        addOptBtn.addEventListener("click", () => {
+          if (optCount >= 5) return;
+          optCount++;
+          const row = document.createElement("div");
+          row.className = "form-row";
+          row.innerHTML = `<label>Option ${optCount}:</label><input type="text" class="poll-option" placeholder="Option ${optCount}" />`;
+          extraOpt.appendChild(row);
+          row.querySelector(".poll-option").addEventListener("input", updatePreview);
+        });
+
+        wrapper.querySelectorAll("input").forEach(i => i.addEventListener("input", updatePreview));
+        updatePreview();
+      }
+
+      function updatePreview() {
+        const questions = Array.from(document.querySelectorAll('.poll-question-form')).map((q, idx) => {
+          const prompt = q.querySelector('.poll-question-input').value.trim();
+          const opts = Array.from(q.querySelectorAll('.poll-option')).map(o => o.value.trim()).filter(Boolean);
+          return { prompt, opts };
+        }).filter(q => q.prompt && q.opts.length >= 2);
+
+        if (!questions.length) {
+          previewArea.innerHTML = '<p>No setup data yet.</p>';
+          return;
+        }
+
+        let html = '';
+        questions.forEach((q, i) => {
+          html += `<p><strong>${i + 1}. ${q.prompt}</strong></p>`;
+          html += '<ul>' + q.opts.map(o => `<li>${o}</li>`).join('') + '</ul>';
+        });
+        previewArea.innerHTML = html;
+      }
+
+      addQuestionButton.addEventListener('click', () => {
+        addQuestion();
+      });
+
+      addQuestion();
+    }
   });
 });
 
@@ -127,6 +207,7 @@ launchBtn.addEventListener("click", async () => {
     const photo = photoInput.files[0];
     const promptInput = document.getElementById("jamboardPrompt");
     const fileInput = document.getElementById("jamboardFile");
+    const pollForms = document.querySelectorAll('.poll-question-form');
 
     if (!selectedTemplate) {
       alert("Please select a widget.");
@@ -145,20 +226,45 @@ launchBtn.addEventListener("click", async () => {
     const promptFileData = file ? await fileToBase64(file) : null;
     const sessionId = `session-${Date.now()}`;
 
-    const sessionData = {
+    let sessionData = {
       room: localStorage.getItem("integradeRoom") || "unnamed",
       name,
-      prompt,
-      fileName: file?.name || "",
       photo: photoData,
-      promptFile: promptFileData,
     };
+
+    if (selectedTemplate === "jamboard") {
+      sessionData = {
+        ...sessionData,
+        prompt,
+        fileName: file?.name || "",
+        promptFile: promptFileData,
+      };
+    } else if (selectedTemplate === "poll") {
+      const questions = Array.from(pollForms).map(form => {
+        const promptTxt = form.querySelector('.poll-question-input').value.trim();
+        const opts = Array.from(form.querySelectorAll('.poll-option'))
+          .map(o => o.value.trim())
+          .filter(Boolean);
+        return { prompt: promptTxt, options: opts };
+      }).filter(q => q.prompt && q.options.length >= 2);
+
+      if (!questions.length) {
+        alert("Please provide at least one prompt with two options.");
+        return;
+      }
+
+      sessionData = { ...sessionData, questions };
+    }
 
     sessionStorage.setItem(sessionId, JSON.stringify(sessionData));
 
     console.log("Launching session:", sessionData);
 
-    window.open(`../widgets/jamboard/jamboard.html?session=${sessionId}`, "_blank");
+    if (selectedTemplate === "jamboard") {
+      window.open(`../widgets/jamboard/jamboard.html?session=${sessionId}`, "_blank");
+    } else if (selectedTemplate === "poll") {
+      window.open(`../widgets/poll/poll.html?session=${sessionId}`, "_blank");
+    }
   } catch (error) {
     console.error("Error launching activity:", error);
     alert("Something went wrong while launching the activity. Check console for details.");
