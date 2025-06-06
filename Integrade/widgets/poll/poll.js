@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const roomLabel = document.getElementById('room-label-display');
   const container = document.getElementById('poll-container');
+  const submitBtn = document.getElementById('submitPoll');
 
   if (!session) {
     container.textContent = 'No poll data found.';
@@ -61,4 +62,58 @@ document.addEventListener('DOMContentLoaded', () => {
 
     container.appendChild(block);
   });
+
+  submitBtn.addEventListener('click', async () => {
+    try {
+      const resp = await fetch('../../includes/poll_results.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ room: session.room || 'unknown', answers })
+      });
+      const data = await resp.json();
+      if (!data.success) throw new Error(data.error || 'submit failed');
+
+      const resResp = await fetch(`../../includes/poll_results.php?room=${encodeURIComponent(session.room || 'unknown')}`);
+      const resData = await resResp.json();
+      if (resData.success) {
+        showResults(resData.results);
+      } else {
+        alert('Failed to load results');
+      }
+    } catch (e) {
+      console.error(e);
+      alert('Error submitting poll');
+    }
+  });
+
+  function showResults(results) {
+    container.innerHTML = '';
+    questions.forEach((q, idx) => {
+      const canvas = document.createElement('canvas');
+      canvas.className = 'result-chart';
+      container.appendChild(canvas);
+      const counts = [];
+      const labels = [];
+      (q.options || []).forEach((opt, i) => {
+        labels.push(opt);
+        counts.push(results[idx]?.[i] || 0);
+      });
+      new Chart(canvas, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [{ data: counts, backgroundColor: '#8604e7' }]
+        },
+        options: {
+          plugins: {
+            legend: { display: false },
+            title: { display: true, text: q.prompt }
+          },
+          responsive: true,
+          scales: { y: { beginAtZero: true, precision: 0 } }
+        }
+      });
+    });
+    submitBtn.remove();
+  }
 });
