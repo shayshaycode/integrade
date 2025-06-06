@@ -117,6 +117,76 @@ widgetCards.forEach(card => {
         }
       }
     }
+    else if (selectedTemplate === "poll") {
+      setupContent.innerHTML = `
+        <div class="poll-setup">
+          <p><strong>Poll Setup:</strong> Enter a question and up to five options for participants to choose from.</p>
+
+          <div class="form-row">
+            <label for="pollQuestion">Question:</label>
+            <input type="text" id="pollQuestion" placeholder="e.g. What's your favourite color?" />
+          </div>
+
+          <div id="pollOptions">
+            <div class="form-row">
+              <label>Option 1:</label>
+              <input type="text" class="poll-option" placeholder="First option" />
+            </div>
+            <div class="form-row">
+              <label>Option 2:</label>
+              <input type="text" class="poll-option" placeholder="Second option" />
+            </div>
+            <div id="extraOptions"></div>
+          </div>
+          <button id="addOptionButton" type="button">Add Option</button>
+
+          <div class="form-row">
+            <label for="pollFollowup">Additional Prompt (optional):</label>
+            <input type="text" id="pollFollowup" placeholder="Any additional instructions..." />
+          </div>
+        </div>
+      `;
+
+      const questionInput = document.getElementById("pollQuestion");
+      const followupInput = document.getElementById("pollFollowup");
+      const addOptionBtn = document.getElementById("addOptionButton");
+      const extraOptions = document.getElementById("extraOptions");
+      let optionCount = 2;
+
+      function updatePreview() {
+        const question = questionInput.value.trim();
+        const options = Array.from(document.querySelectorAll(".poll-option"))
+          .map(opt => opt.value.trim())
+          .filter(Boolean);
+        const follow = followupInput.value.trim();
+        let html = "";
+        if (question) {
+          html += `<p><strong>${question}</strong></p>`;
+        }
+        if (options.length) {
+          html += '<ul>' + options.map(o => `<li>${o}</li>`).join('') + '</ul>';
+        }
+        if (follow) {
+          html += `<p>${follow}</p>`;
+        }
+        previewArea.innerHTML = html || '<p>No setup data yet.</p>';
+      }
+
+      addOptionBtn.addEventListener("click", () => {
+        if (optionCount >= 5) return;
+        optionCount++;
+        const wrapper = document.createElement("div");
+        wrapper.className = "form-row";
+        wrapper.innerHTML = `<label>Option ${optionCount}:</label><input type="text" class="poll-option" placeholder="Option ${optionCount}" />`;
+        extraOptions.appendChild(wrapper);
+        wrapper.querySelector(".poll-option").addEventListener("input", updatePreview);
+      });
+
+      questionInput.addEventListener("input", updatePreview);
+      followupInput.addEventListener("input", updatePreview);
+      document.querySelectorAll(".poll-option").forEach(opt => opt.addEventListener("input", updatePreview));
+      updatePreview();
+    }
   });
 });
 
@@ -127,6 +197,8 @@ launchBtn.addEventListener("click", async () => {
     const photo = photoInput.files[0];
     const promptInput = document.getElementById("jamboardPrompt");
     const fileInput = document.getElementById("jamboardFile");
+    const pollQuestion = document.getElementById("pollQuestion");
+    const pollFollowup = document.getElementById("pollFollowup");
 
     if (!selectedTemplate) {
       alert("Please select a widget.");
@@ -145,20 +217,44 @@ launchBtn.addEventListener("click", async () => {
     const promptFileData = file ? await fileToBase64(file) : null;
     const sessionId = `session-${Date.now()}`;
 
-    const sessionData = {
+    let sessionData = {
       room: localStorage.getItem("integradeRoom") || "unnamed",
       name,
-      prompt,
-      fileName: file?.name || "",
       photo: photoData,
-      promptFile: promptFileData,
     };
+
+    if (selectedTemplate === "jamboard") {
+      sessionData = {
+        ...sessionData,
+        prompt,
+        fileName: file?.name || "",
+        promptFile: promptFileData,
+      };
+    } else if (selectedTemplate === "poll") {
+      const options = Array.from(document.querySelectorAll(".poll-option"))
+        .map(o => o.value.trim())
+        .filter(Boolean);
+      sessionData = {
+        ...sessionData,
+        question: pollQuestion?.value.trim() || "",
+        options,
+        followup: pollFollowup?.value.trim() || "",
+      };
+      if (!sessionData.question || options.length < 2) {
+        alert("Please provide a question and at least two options.");
+        return;
+      }
+    }
 
     sessionStorage.setItem(sessionId, JSON.stringify(sessionData));
 
     console.log("Launching session:", sessionData);
 
-    window.open(`../widgets/jamboard/jamboard.html?session=${sessionId}`, "_blank");
+    if (selectedTemplate === "jamboard") {
+      window.open(`../widgets/jamboard/jamboard.html?session=${sessionId}`, "_blank");
+    } else if (selectedTemplate === "poll") {
+      window.open(`../widgets/poll/poll.html?session=${sessionId}`, "_blank");
+    }
   } catch (error) {
     console.error("Error launching activity:", error);
     alert("Something went wrong while launching the activity. Check console for details.");
