@@ -442,3 +442,55 @@ footer {
   border-radius: 6px;
   font-family: var(--font);
 }
+
+.poll-setup {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-top: 1rem;
+  color: #ddd;
+}
+
+.poll-question-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.poll-question-form .form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.poll-question-form label {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.poll-question-form input[type="text"] {
+  padding: 0.6rem;
+  background-color: #111;
+  border: 1px solid var(--primary);
+  color: white;
+  border-radius: 6px;
+  font-family: var(--font);
+}
+
+.add-question-btn,
+.add-option-btn {
+  padding: 0.4rem 0.8rem;
+  background-color: var(--secondary);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  font-family: var(--font);
+  width: fit-content;
+}
+
+.add-question-btn {
+  align-self: flex-start;
+}
