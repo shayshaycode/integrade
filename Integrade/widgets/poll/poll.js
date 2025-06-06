@@ -19,23 +19,46 @@ document.addEventListener('DOMContentLoaded', () => {
 
   roomLabel.textContent = `Room: ${session.room || 'unknown'}`;
 
-  const question = session.question || '';
-  const options = Array.isArray(session.options) ? session.options : [];
-  const followup = session.followup || '';
+  const questions = Array.isArray(session.questions) ? session.questions : [];
+  const answers = [];
 
-  let html = '';
-  if (question) {
-    html += `<h2 class="poll-question">${question}</h2>`;
+  if (!questions.length) {
+    container.textContent = 'No poll questions found.';
+    return;
   }
-  if (options.length) {
-    html += '<ul class="poll-options">';
-    options.forEach(opt => {
-      html += `<li>${opt}</li>`;
+
+  questions.forEach((q, idx) => {
+    const block = document.createElement('div');
+    block.className = 'poll-question-block';
+
+    const title = document.createElement('h2');
+    title.className = 'poll-question';
+    title.textContent = q.prompt || `Question ${idx + 1}`;
+    block.appendChild(title);
+
+    const slider = document.createElement('input');
+    slider.type = 'range';
+    slider.min = 0;
+    slider.max = Math.max(0, (q.options || []).length - 1);
+    slider.value = 0;
+    slider.step = 1;
+    slider.className = 'poll-slider';
+    block.appendChild(slider);
+
+    const labels = document.createElement('div');
+    labels.className = 'option-labels';
+    (q.options || []).forEach(opt => {
+      const span = document.createElement('span');
+      span.textContent = opt;
+      labels.appendChild(span);
     });
-    html += '</ul>';
-  }
-  if (followup) {
-    html += `<p class="poll-followup">${followup}</p>`;
-  }
-  container.innerHTML = html;
+    block.appendChild(labels);
+
+    slider.addEventListener('input', () => {
+      answers[idx] = parseInt(slider.value, 10);
+      sessionStorage.setItem(`${sessionId}-answers`, JSON.stringify(answers));
+    });
+
+    container.appendChild(block);
+  });
 });

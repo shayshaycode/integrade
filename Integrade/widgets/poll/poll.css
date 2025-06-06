@@ -41,25 +41,24 @@ body {
   border-radius: 8px;
 }
 
+.poll-question-block {
+  margin-bottom: 2rem;
+}
+
 .poll-question {
   color: var(--accent);
   margin-bottom: 1rem;
   text-align: center;
+  font-weight: bold;
 }
 
-.poll-options {
-  list-style: none;
-  padding: 0;
-  margin-bottom: 1rem;
-}
-.poll-options li {
-  background-color: var(--primary);
-  margin: 0.5rem 0;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
+.poll-slider {
+  width: 100%;
 }
 
-.poll-followup {
-  text-align: center;
-  color: var(--cream);
+.option-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
 }
