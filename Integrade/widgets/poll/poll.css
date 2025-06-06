@@ -1,0 +1,64 @@
+:root {
+  --primary: #04010c;
+  --cream: #fefaeb;
+  --accent: #00d0a9;
+  --secondary: #8604e7;
+  --light_gray: #373737;
+  --font: 'League Spartan', sans-serif;
+}
+
+body {
+  font-family: var(--font);
+  background-color: var(--primary);
+  color: var(--cream);
+  line-height: 1.6;
+  padding: 2rem;
+}
+
+.app-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.header-top-row {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80px;
+}
+
+.header-logo {
+  height: 80px;
+  object-fit: contain;
+}
+
+.poll-container {
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: var(--light_gray);
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.poll-question-block {
+  margin-bottom: 2rem;
+}
+
+.poll-question {
+  color: var(--accent);
+  margin-bottom: 1rem;
+  text-align: center;
+  font-weight: bold;
+}
+
+.poll-slider {
+  width: 100%;
+}
+
+.option-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
